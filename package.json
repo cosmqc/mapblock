@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "firebase": "^9.6.10"
+  },
+  "name": "nz-map",
+  "version": "1.0.0",
+  "main": "./src/map.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=development"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "description": ""
+}
