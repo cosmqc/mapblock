@@ -10,7 +10,7 @@ coordinates = []
 output_file = open(output_file_loc, "a")
 with open(input_file_loc) as input_file:
     for i, line in enumerate(input_file):
-        line = line.replace("FILLER\"", f"javascript:void(0)\" data-id={i}")
+        line = line.replace("FILLER\"", f"javascript:void(0)\" data-id='{i}'")
         output_file.write(line)
 
 coordinates.sort()

@@ -1,5 +1,5 @@
-input_file_loc = "/Users/administrator/Desktop/NZ Map/input.txt"
-output_file_loc = "/Users/administrator/Desktop/NZ Map/output.txt"
+input_file_loc = "/Users/administrator/Desktop/NZ Map/File Manip/input.txt"
+output_file_loc = "/Users/administrator/Desktop/NZ Map/File Manip/output.txt"
 
 f = open(output_file_loc, "w")
 f.write("")

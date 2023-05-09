@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "."
+		},
+		{
+			"path": "../Face Recog : Detect"
 		}
 	],
 	"settings": {}
