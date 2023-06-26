@@ -1,7 +1,4 @@
-// TODO
-// - move resizeCanvas and arrow_x/arrow_y redefs to a resize listener
-
-import { readBlockData, writeBlockData, readDB } from './init_firebase'
+import { readBlockData, writeBlockData, readDB } from './init_firebase.js'
 
 const priceMultipliers = [5, 100, 2000]
 const canvas = document.getElementById("lineCanvas");
@@ -13,12 +10,12 @@ let currently_selected = false
 let blockMap = {};
 
 class Block {
-    constructor(id, mapCoords, gridCoords) {
+    constructor(id, mapCoords, gridCoords, price, isBought) {
         this.id = id;
         this.mapCoords = mapCoords;
         this.gridCoords = gridCoords;
-        this.price = Infinity;
-        this.isBought = true;
+        this.price = price;
+        this.isBought = isBought;
     }
 
     updateBlock(price, isBought) {
@@ -45,7 +42,7 @@ function updateDBfromPage() {
 async function updateMapFromDB() {
     const data = await readDB();
     Object.values(data).forEach(block => {
-        blockMap[block.id] = new Block(block.id, block.mapCoords, block.gridCoords);
+        blockMap[block.id] = new Block(block.id, block.mapCoords, block.gridCoords, block.price, block.isBought);
     });
 }
 // Updates the actual page elements to fit the blockMap data. Sort of a hard-reset
@@ -53,12 +50,12 @@ function updatePageFromMap() {
 
 }
 
-// Open menu that displays tile ID, price, coordinates?, and purchase info.
-// Clark's design flagged in emails.
 function changeInfo(data) {
-    $('infoBox').html = `Aotearoa Block #${data.id}`
-    $('.priceBoxes').each(function(priceBox) {
-        this.html = `$${data.price * priceMultipliers[i]}`
+    $('#tile-id').html(`Aotearoa Block #${data.id}`);
+    $('.price').each(function() {
+        $(this).html(`$${data.price}`);
+        console.log($(this).html());
+        $(this).css('visibility', 'visible');
     });
 }
 
@@ -70,7 +67,7 @@ function drawToSquare(ctx, x, y, arrow_bounding) {
     x = x - window.scrollX
     y = y - window.scrollY
 
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
     ctx.strokeStyle = 'red';
     ctx.lineWidth = 2;
@@ -80,7 +77,7 @@ function drawToSquare(ctx, x, y, arrow_bounding) {
     ctx.lineTo(arrow_x - 20, y);
     ctx.moveTo(arrow_x - 20, y);
     ctx.lineTo(x, y);
-    ctx.rect(x - 16, y, 16, 15)
+    ctx.rect(x - 16, y, 16, 15);
     ctx.stroke();
     ctx.closePath();
 }
@@ -94,14 +91,19 @@ function resizeCanvas() {
 
 // Sets an event listener for each tile that fetches data from the data
 // dictionary and calls the function to open the info menu
-$('body').on('click', '.area', function(area) {
-    console.log("area clicked")
-    area.preventDefault();
-    let coords = area.getAttribute('block').gridCoords;
-    drawToSquare(context, coords.x2, coords.y1, arrsow_bounding);
-    currently_selected = [coords.x2, coords.y1]
-    changeInfo(data);
-    $('infoDesc').style.visibility = 'visible'
+$('body').on('click', 'area', function(event) {
+    console.log("area clicked");
+    event.preventDefault();
+    let id = $(this).attr("data-id");
+    if (id == 0) {
+        console.log(blockMap);
+    }
+    console.log(blockMap[id]);
+    let coords = blockMap[id].gridCoords;
+    console.log(coords);
+    drawToSquare(context, coords.x2, coords.y, arrow_bounding);
+    currently_selected = [coords.x2, coords.y]
+    changeInfo(blockMap[id]);
 });
 
 // move line on scroll
@@ -120,3 +122,6 @@ $(window).on('resize', function() {
 });
 
 resizeCanvas();
+updateMapFromDB();
+updateBlocks();
+console.log('js loaded');
