@@ -24,13 +24,6 @@ class Block {
     }
 }
 
-function updateBlocks() {
-    const data = readDB()
-    Object.values(blockMap).forEach(block => {
-        block.updateBlock(data.id.price, data.id.isBought)
-    });
-}
-
 // Reuploads the entire page of tiles to the database. Sort of a hard-reset.
 function updateDBfromPage() {
     Object.values(blockMap).forEach(block => {
@@ -45,9 +38,25 @@ async function updateMapFromDB() {
         blockMap[block.id] = new Block(block.id, block.mapCoords, block.gridCoords, block.price, block.isBought);
     });
 }
+
 // Updates the actual page elements to fit the blockMap data. Sort of a hard-reset
 function updatePageFromMap() {
+    console.log("updatepagefrommap")
+    console.log(blockMap, Object.keys(blockMap).length);
+    let i = 0;
+    $('area').each(function() {
+        console.log(i);
 
+        $(this).data("block", blockMap[i]);
+        $(this).attr("coords", formatCoordString(blockMap[i]));
+        i++;
+    })
+    console.log($('map').html());
+}
+
+function formatCoordString(block) {
+    console.log(block);
+    return `${block.gridCoords.x},${block.gridCoords.y},${block.gridCoords.x2},${block.gridCoords.y2}`
 }
 
 function changeInfo(data) {
@@ -92,14 +101,9 @@ function resizeCanvas() {
 // Sets an event listener for each tile that fetches data from the data
 // dictionary and calls the function to open the info menu
 $('body').on('click', 'area', function(event) {
-    console.log("area clicked");
     event.preventDefault();
-    let id = $(this).attr("data-id");
-    if (id == 0) {
-        console.log(blockMap);
-    }
-    console.log(blockMap[id]);
-    let coords = blockMap[id].gridCoords;
+    let id = 0
+    let coords = $(this).data("block").gridCoords;
     console.log(coords);
     drawToSquare(context, coords.x2, coords.y, arrow_bounding);
     currently_selected = [coords.x2, coords.y]
@@ -121,7 +125,9 @@ $(window).on('resize', function() {
     arrow_bounding = arrow.getBoundingClientRect();
 });
 
-resizeCanvas();
-updateMapFromDB();
-updateBlocks();
-console.log('js loaded');
+$('map').ready(async function() {
+    resizeCanvas();
+    await updateMapFromDB();
+    updatePageFromMap();
+    console.log('js loaded');
+});
