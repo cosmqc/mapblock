@@ -39,9 +39,9 @@
         </div>
     </div>
     <canvas id="lineCanvas" width=100 height=100></canvas>
-    <img src="nz-block-placements.gif" width="751" height="1063" alt="" usemap="#nz_block_placements_Map">
-    <map name="nz_block_placements_Map">
-        <area shape="rect" alt="" coords="342,28,358,43" href="javascript:void(0)" block="">
+    <img id="nz_image" src="nz-block-placements.gif" width="751" height="1063" alt="" usemap="#nz_map">
+    <map id="nz_image_map" name="nz_map">
+        <area shape="rect" alt="" coords="342,28,358,43" href="javascript:void(0)" data-id='0'>
         <area shape="rect" alt="" coords="358,28,373,43" href="javascript:void(0)" data-id='1'>
         <area shape="rect" alt="" coords="373,28,389,43" href="javascript:void(0)" data-id='2'>
         <area shape="rect" alt="" coords="388,28,404,43" href="javascript:void(0)" data-id='3'>
@@ -828,6 +828,7 @@
         <area shape="rect" alt="" coords="97,1041,112,1057" href="javascript:void(0)" data-id='784'>
         <area shape="rect" alt="" coords="112,1041,127,1057" href="javascript:void(0)" data-id='785'>
     </map>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.imagemapster.min.js"></script>
     <script type="module" src="map.js"></script>
 </body>

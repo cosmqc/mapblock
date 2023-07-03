@@ -6,6 +6,7 @@ const arrow = document.getElementById("arrow");
 const context = canvas.getContext('2d');
 let arrow_bounding = arrow.getBoundingClientRect();
 let currently_selected = false
+const img_w_to_h_ratio = $('img').naturalWidth / $('img').naturalHeight
 
 let blockMap = {};
 
@@ -41,21 +42,15 @@ async function updateMapFromDB() {
 
 // Updates the actual page elements to fit the blockMap data. Sort of a hard-reset
 function updatePageFromMap() {
-    console.log("updatepagefrommap")
-    console.log(blockMap, Object.keys(blockMap).length);
     let i = 0;
     $('area').each(function() {
-        console.log(i);
-
         $(this).data("block", blockMap[i]);
         $(this).attr("coords", formatCoordString(blockMap[i]));
         i++;
-    })
-    console.log($('map').html());
+    });
 }
 
 function formatCoordString(block) {
-    console.log(block);
     return `${block.gridCoords.x},${block.gridCoords.y},${block.gridCoords.x2},${block.gridCoords.y2}`
 }
 
@@ -63,13 +58,13 @@ function changeInfo(data) {
     $('#tile-id').html(`Aotearoa Block #${data.id}`);
     $('.price').each(function() {
         $(this).html(`$${data.price}`);
-        console.log($(this).html());
         $(this).css('visibility', 'visible');
     });
 }
 
 // draw a shaped line from arrow to (x,y)
-function drawToSquare(ctx, x, y, arrow_bounding) {
+function drawToSquare(ctx, block) {
+    console.log(block.getBoundingClientRect);
     let arrow_x = arrow_bounding.left
     let arrow_y = arrow_bounding.top + (arrow_bounding.height / 2)
 
@@ -96,26 +91,34 @@ function resizeCanvas() {
     const canvas = document.getElementById('lineCanvas');
     canvas.setAttribute('width', window.innerWidth);
     canvas.setAttribute('height', window.innerHeight);
+    $('#nz_map').mapster('resize', window.innerWidth, window.innerHeight, 1000);
+}
+
+function setupImageMapster() {
+    $('#nz_image').mapster({
+        mapKey: 'data-id',
+        stroke: true,
+        strokeWidth: 2,
+        strokeColor: 'ff0000',
+        singleSelect: true,
+        scaleMap: true
+    });
 }
 
 // Sets an event listener for each tile that fetches data from the data
 // dictionary and calls the function to open the info menu
 $('body').on('click', 'area', function(event) {
     event.preventDefault();
-    let id = 0
-    let coords = $(this).data("block").gridCoords;
-    console.log(coords);
-    drawToSquare(context, coords.x2, coords.y, arrow_bounding);
-    currently_selected = [coords.x2, coords.y]
-    changeInfo(blockMap[id]);
+    let block = $(this);
+    drawToSquare(context, block);
+    currently_selected = block;
+    changeInfo(blockMap[block.data("block").id]);
 });
 
 // move line on scroll
 $(window).on('scroll', function() {
     if (currently_selected) {
-        let x = currently_selected[0]
-        let y = currently_selected[1]
-        drawToSquare(context, x, y, arrow_bounding);
+        drawToSquare(context, currently_selected);
     }
 });
 
@@ -123,11 +126,14 @@ $(window).on('scroll', function() {
 $(window).on('resize', function() {
     resizeCanvas();
     arrow_bounding = arrow.getBoundingClientRect();
+    $('#nz_image').mapster('resize', window.innerHeight * img_w_to_h_ratio, window.innerHeight)
+    
 });
 
 $('map').ready(async function() {
     resizeCanvas();
     await updateMapFromDB();
+    setupImageMapster();
     updatePageFromMap();
     console.log('js loaded');
 });
