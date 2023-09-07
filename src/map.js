@@ -57,19 +57,24 @@ function formatCoordString(block) {
 function changeInfo(data) {
     $('#tile-id').html(`Aotearoa Block #${data.id}`);
     $('.price').each(function() {
-        $(this).html(`$${data.price}`);
+        $(this).html(`$${data.price}<br>
+        <form action="/checkout.php" method="POST">
+            <button type="submit" id="checkout-button">
+                Checkout
+            </button>
+      </form>`);
         $(this).css('visibility', 'visible');
     });
 }
 
 // draw a shaped line from arrow to (x,y)
 function drawToSquare(ctx, block) {
-    console.log(block.getBoundingClientRect);
+    console.log(block);
     let arrow_x = arrow_bounding.left
     let arrow_y = arrow_bounding.top + (arrow_bounding.height / 2)
 
-    x = x - window.scrollX
-    y = y - window.scrollY
+    let x = block.gridCoords.x - window.scrollX
+    let y = block.gridCoords.y - window.scrollY
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
@@ -81,7 +86,6 @@ function drawToSquare(ctx, block) {
     ctx.lineTo(arrow_x - 20, y);
     ctx.moveTo(arrow_x - 20, y);
     ctx.lineTo(x, y);
-    ctx.rect(x - 16, y, 16, 15);
     ctx.stroke();
     ctx.closePath();
 }
@@ -109,10 +113,10 @@ function setupImageMapster() {
 // dictionary and calls the function to open the info menu
 $('body').on('click', 'area', function(event) {
     event.preventDefault();
-    let block = $(this);
+    let block = $(this).data("block");
     drawToSquare(context, block);
     currently_selected = block;
-    changeInfo(blockMap[block.data("block").id]);
+    changeInfo(blockMap[block.id]);
 });
 
 // move line on scroll
