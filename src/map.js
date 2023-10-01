@@ -1,20 +1,18 @@
-import { readBlockData, writeBlockData, readDB } from './init_firebase.js'
-
-const priceMultipliers = [5, 100, 2000]
-const canvas = document.getElementById("lineCanvas");
-const arrow = document.getElementById("arrow");
-const context = canvas.getContext('2d');
-let arrow_bounding = arrow.getBoundingClientRect();
+import { readDB } from './init_firebase.js'
 let currently_selected = false
-const img_w_to_h_ratio = $('img').naturalWidth / $('img').naturalHeight
 
+const canvas = document.getElementById("lineCanvas");
+const ctx = canvas.getContext('2d');
+
+const areas = $("area");
 let blockMap = {};
+let timer = null;
 
 class Block {
-    constructor(id, mapCoords, gridCoords, price, isBought) {
+    constructor(id, mapCoords, price, isBought) {
         this.id = id;
+        this.area = areas[id];
         this.mapCoords = mapCoords;
-        this.gridCoords = gridCoords;
         this.price = price;
         this.isBought = isBought;
     }
@@ -25,18 +23,11 @@ class Block {
     }
 }
 
-// Reuploads the entire page of tiles to the database. Sort of a hard-reset.
-function updateDBfromPage() {
-    Object.values(blockMap).forEach(block => {
-        writeBlockData(block.id, block.mapCoords, block.gridCoords, block.price, block.isBought);
-    });
-}
-
 // Updates the blockMap dictionary to fit the DB data
 async function updateMapFromDB() {
     const data = await readDB();
     Object.values(data).forEach(block => {
-        blockMap[block.id] = new Block(block.id, block.mapCoords, block.gridCoords, block.price, block.isBought);
+        blockMap[block.id] = new Block(block.id, block.mapCoords, block.price, block.isBought);
     });
 }
 
@@ -45,7 +36,6 @@ function updatePageFromMap() {
     let i = 0;
     $('area').each(function() {
         $(this).data("block", blockMap[i]);
-        $(this).attr("coords", formatCoordString(blockMap[i]));
         i++;
     });
 }
@@ -54,90 +44,125 @@ function formatCoordString(block) {
     return `${block.gridCoords.x},${block.gridCoords.y},${block.gridCoords.x2},${block.gridCoords.y2}`
 }
 
-function changeInfo(data) {
-    $('#tile-id').html(`Aotearoa Block #${data.id}`);
-    $('.price').each(function() {
-        $(this).html(`$${data.price}<br>
-        <form action="/checkout.php" method="POST">
-            <button type="submit" id="checkout-button">
-                Checkout
-            </button>
-      </form>`);
-        $(this).css('visibility', 'visible');
-    });
+function splitCoords(coordString) {
+    let coordArray = coordString.split(",");
+    for (let i = 0; i < coordArray.length; i++) {
+        coordArray[i] = parseInt(coordArray[i]);
+    }
+    return coordArray;
 }
-
 // draw a shaped line from arrow to (x,y)
-function drawToSquare(ctx, block) {
-    console.log(block);
-    let arrow_x = arrow_bounding.left
-    let arrow_y = arrow_bounding.top + (arrow_bounding.height / 2)
+function drawToSquare(block) {
+    let bounding = document.getElementById('tile-id').getBoundingClientRect();
+    let b_x = bounding.x;
+    let b_y = bounding.y - 50;
 
-    let x = block.gridCoords.x - window.scrollX
-    let y = block.gridCoords.y - window.scrollY
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let coordTuple = splitCoords($(block.area).attr("coords"));
+    let x1 = coordTuple[0];
+    let y1 = coordTuple[1];
+    let x2 = coordTuple[2];
+    let y2 = coordTuple[3];
+    console.log(x1, y1, x2, y2);
     ctx.beginPath();
-    ctx.strokeStyle = 'red';
+    ctx.strokeStyle = '#B7EF8B';
     ctx.lineWidth = 2;
-    ctx.moveTo(arrow_x, arrow_y);
-    ctx.lineTo(arrow_x - 20, arrow_y);
-    ctx.moveTo(arrow_x - 20, arrow_y);
-    ctx.lineTo(arrow_x - 20, y);
-    ctx.moveTo(arrow_x - 20, y);
-    ctx.lineTo(x, y);
+    ctx.moveTo(b_x, b_y);
+    ctx.lineTo(b_x - 40, b_y);
+    ctx.moveTo(b_x - 40, b_y);
+    ctx.lineTo(b_x - 40, y1);
+    ctx.moveTo(b_x - 40, y1);
+    ctx.lineTo(x2, y1);
+    ctx.rect(x1, y1, (x2 - x1), (y2 - y1));
     ctx.stroke();
     ctx.closePath();
 }
 
-// Resize the canvas to fit the screen.
-function resizeCanvas() {
-    const canvas = document.getElementById('lineCanvas');
-    canvas.setAttribute('width', window.innerWidth);
-    canvas.setAttribute('height', window.innerHeight);
-    $('#nz_map').mapster('resize', window.innerWidth, window.innerHeight, 1000);
+function render() {
+    ctx.globalAlpha = 0.5;
+    ctx.strokeStyle = '#202020';
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    $('area').each(function() {
+        if ($(this).data("block").isBought) {
+            let coordTuple = splitCoords($(this).attr("coords"));
+            let x1 = coordTuple[0];
+            let y1 = coordTuple[1];
+            let x2 = coordTuple[2];
+            let y2 = coordTuple[3];
+
+            ctx.beginPath();
+            ctx.fillRect(x1, y1, (x2 - x1), (y2 - y1));
+            ctx.closePath();
+        }
+    })
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    if (currently_selected) {
+        drawToSquare(currently_selected);
+    }
 }
 
-function setupImageMapster() {
-    $('#nz_image').mapster({
-        mapKey: 'data-id',
-        stroke: true,
-        strokeWidth: 2,
-        strokeColor: 'ff0000',
-        singleSelect: true,
-        scaleMap: true
-    });
+function changeInfo(data) {
+    $('#tile-id').html(`Aotearoa Block #${data.id}`);
+    $('#price').html(`$${data.price}`);
+    $('#infoDesc').css('visibility', 'visible');
 }
+
+function debounce() {
+    clearTimeout(timer);
+    timer = setTimeout(render, 300);
+}
+
+
+// Add load listener to show pag when all images loaded
+window.addEventListener('load', function() {
+    alert("It's loaded!")
+})
 
 // Sets an event listener for each tile that fetches data from the data
 // dictionary and calls the function to open the info menu
 $('body').on('click', 'area', function(event) {
     event.preventDefault();
-    let block = $(this).data("block");
-    drawToSquare(context, block);
-    currently_selected = block;
-    changeInfo(blockMap[block.id]);
+    currently_selected = $(this).data("block");
+    render();
+    changeInfo(blockMap[currently_selected.id]);
 });
 
-// move line on scroll
-$(window).on('scroll', function() {
-    if (currently_selected) {
-        drawToSquare(context, currently_selected);
+$('#checkout-button').on('click', function(event) {
+    event.preventDefault()
+    if (currently_selected != false) {
+        $.ajax({
+            type: "POST",
+            url: "../../checkout.php",
+            data: JSON.stringify({
+                "name": `Block #${currently_selected.id}`,
+                "price": currently_selected.price,
+            }),
+            contentType: "application/json",
+            success: function(result) {
+                window.location.href = result;
+            },
+            error: function(result) {
+                alert('An error occured, please try again');
+                console.log(`Error talking w Stripe. Received URL: ${result}`);
+            }
+        });
     }
-});
+})
 
-// Make sure bounding box doesnt get distorted by screen resize
 $(window).on('resize', function() {
-    resizeCanvas();
-    arrow_bounding = arrow.getBoundingClientRect();
-    $('#nz_image').mapster('resize', window.innerHeight * img_w_to_h_ratio, window.innerHeight)
-    
-});
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    canvas.setAttribute('width', window.getComputedStyle(canvas, null).getPropertyValue("width"));
+    canvas.setAttribute('height', window.getComputedStyle(canvas, null).getPropertyValue("height"));
+    debounce(render, 300);
+})
 
 $('map').ready(async function() {
-    resizeCanvas();
+    imageMapResize();
     await updateMapFromDB();
-    setupImageMapster();
     updatePageFromMap();
-    console.log('js loaded');
+
+
+    // trigger manual resize event to get map to right size 
+    let resizeEvent = new Event('resize');
+    window.dispatchEvent(resizeEvent);
 });

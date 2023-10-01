@@ -4,43 +4,16 @@
     <title>blocc</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="map.css">
-    <script>
-        console.log("top loaded");
-    </script>
 </head>
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-    <div id="arrow"></div>
-    <div class="infoBox" id="priceBox">
-        <div class="header" id="tile-id">Pick a tile!</div>
-        <div id="infoDesc" style="visibility: hidden">
-            <div class="price">$75</div>
-            <div class="info">
-                <h2>Sponsor</h2>
-                <h3>Your contribution to this artwork will be recognized on the wall and you have contributed to developing more opportunities for the youth of Otautahi</h3>
-            </div>
-            <div class="price">$200</div>
-            <div class="info">
-                <h2>Sponsor Plus</h2>
-                <h3>You will be recognized and you will also receive a wall art of Aotearoa as a thank you.</h3>
-            </div>
-            <div class="price">$1000</div>
-            <div class="info">
-                <h2>Sponsor Corporate</h2>
-                <h3>You will be recognized and you will also receive a wall art of Aotearoa as a thank you and your logo can be displayed near the sculpture.</h3>
-            </div>
-        </div>
-    </div>
-    <div class="infoBox" id="egBox">
-        <div class="header">Example Block</div>
-        <div id="egDesc">
-            <img id="exampleImg" src="example.png"><br>
-            <h3>Each block of this map is a 100x100mm piece of Macrocarpa grown here in Aotearoa. The complete map will climb a shear wall 3 stories tall in the new YMCA building.</h3>
-        </div>
-    </div>
-    <canvas id="lineCanvas" width=100 height=100></canvas>
-    <img id="nz_image" src="nz-block-placements.gif" width="751" height="1063" alt="" usemap="#nz_map">
-    <map id="nz_image_map" name="nz_map">
+    <div class="loader"></div>
+    <div id="page">
+        <div id="logobar"><img id="headerlogo" src="long_logo.png"></div>
+        <div id="content">
+            <canvas id="lineCanvas" width="2000" height="2000"></canvas>
+            <img id="nz_image" src="nz-block-placements.gif" width="751" height="1063" alt="" usemap="#nz_map">
+            <map id="nz_image_map" name="nz_map">
         <area shape="rect" alt="" coords="342,28,358,43" href="javascript:void(0)" data-id='0'>
         <area shape="rect" alt="" coords="358,28,373,43" href="javascript:void(0)" data-id='1'>
         <area shape="rect" alt="" coords="373,28,389,43" href="javascript:void(0)" data-id='2'>
@@ -827,8 +800,31 @@
         <area shape="rect" alt="" coords="81,1041,97,1057" href="javascript:void(0)" data-id='783'>
         <area shape="rect" alt="" coords="97,1041,112,1057" href="javascript:void(0)" data-id='784'>
         <area shape="rect" alt="" coords="112,1041,127,1057" href="javascript:void(0)" data-id='785'>
-    </map>
+        
+            </map>
+            <div id="sidebar">
+                <div class="infoBox" id="priceBox">
+                    <div class="header" id="tile-id">Pick a tile!</div>
+                    <div id="infoDesc" style="visibility: hidden">
+                        <div class="price">$75</div>
+                        <div class="info">
+                            <h2>Sponsor</h2>
+                            <h3>Your contribution to this artwork will be recognized on the wall and you have contributed to developing more opportunities for the youth of Otautahi</h3>
+                        </div>
+                        <button id="checkout-button">Checkout</button>
+                    </div>
+                </div>
+                <div class="infoBox" id="egBox">
+                    <div class="header">Example Block</div>
+                    <div id="egDesc">
+                        <img id="exampleImg" src="example.png"><br>
+                        <h3>Each block of this map is a 100x100mm piece of Macrocarpa grown here in Aotearoa. The complete map will climb a shear wall 3 stories tall in the new YMCA building.</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    <script type="text/javascript" src="jquery.imagemapster.min.js"></script>
+    <script type="text/javascript" src="imageMapResizer.js"></script>
     <script type="module" src="map.js"></script>
 </body>
