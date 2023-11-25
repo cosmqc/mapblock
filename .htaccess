@@ -1,0 +1,1 @@
+RewriteRule send-mail index.php?send-mail [NC,P]

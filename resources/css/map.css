@@ -1,0 +1,283 @@
+﻿@font-face {
+    font-family: 'Inter';
+    src: url('/resources/fonts/inter/Inter-Regular.eot'); /* IE9 Compat Modes */
+    src: url('/resources/fonts/inter/Inter-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('/resources/fonts/inter/Inter-Regular.woff') format('woff'), /* Modern Browsers */
+    url('/resources/fonts/inter/Inter-Regular.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('/resources/fonts/inter/Inter-Regular.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+@font-face {
+    font-family: 'Manuka Bold';
+    src: url('/resources/fonts/inter/Manuka-Bold.eot'); /* IE9 Compat Modes */
+    src: url('/resources/fonts/inter/Manuka-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('/resources/fonts/inter/Manuka-Bold.woff') format('woff'), /* Modern Browsers */
+    url('/resources/fonts/inter/Manuka-Bold.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('/resources/fonts/inter/Manuka-Bold.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+html, body {
+    margin: 0px;
+    min-width: fit-content;
+    min-height: fit-content;
+    overflow: hidden;
+    --background-color: #F5FBFE;
+    --focus-color: #B7EF8B;
+}
+
+body {
+    font-family: 'Inter';
+    font-size: 0.75rem;
+    background-color: var(--background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    font-family: 'Manuka Bold';
+    font-size: 3vw;
+}
+
+#logobar {
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+    column-gap: 50px;
+    padding-top: 1%;
+}
+img {
+    z-index: 11;
+}
+
+#headerlogo {
+    width: 40%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#tagline {
+    width: 20%;
+}
+
+#content {
+    width: 100%;
+    height: 86%;
+}
+
+#lineCanvas {
+    z-index: 2;
+    pointer-events: none;
+    position: fixed;
+}
+
+map {
+    display: none;
+    z-index: 10;
+}
+
+.infoDesc {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 5px 5px 5px;
+    text-align: center;
+}
+
+#egDesc {
+    padding: 20px 10px;
+    height: 25vh;
+    text-align: center;
+}
+
+.header {
+    background-color: var(--focus-color);
+    color: black;
+    text-align: center;
+    font-size: 1.5vw;
+    padding: 2vh 0;
+    font-family: 'Manuka Bold';
+}
+
+.price {
+    text-align: left;
+    padding-top: 13px;
+    padding-left: 15px;
+    font-size: 15px;
+}
+
+h2 {
+    margin-bottom: 0;
+    display: inline;
+}
+
+h3 {
+    margin-top: 2px;
+}
+
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 86%;
+    position: absolute;
+    right: 5vw;
+    top: 12%;
+}
+
+#exampleImg {
+    display: block;
+    width: auto;
+    max-height: 70%;
+    min-width: 30%;
+    max-width: 100%;
+    text-align: center;
+    margin: auto;
+}
+
+#nz_image {
+    height: 100%;
+    width: auto;
+}
+
+.area {
+    color: rgba(150, 150, 150, 10);
+}
+
+#page {
+    display: none;
+}
+
+.loader {
+    border: 16px solid var(--focus-color);
+    border-top: 16px solid #3498db;
+    border-bottom: 16px solid #3498db;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.infoBox {
+    border: 3px solid var(--focus-color);
+    border-radius: 10px;
+    width: 28vw;
+    right: 6vw;
+    overflow: hidden;
+    max-height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.checkout-button {
+    align-self: center;
+    background-color: var(--focus-color);
+    border: none;
+    padding: 8px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    font-size: 1.25rem;
+}
+
+@media (orientation: landscape) {
+    #priceBox-landscape {
+        top: 15vh;
+    }
+    #priceBox-portrait {
+        display: none;
+    }
+}
+
+@media (orientation: portrait) {
+    #priceBox-portrait {
+        display: block;
+        position: absolute;
+        bottom: 4vh;
+        right: 4vh;
+    }
+    #sidebar {
+        display: none;
+    }
+}
+
+stripe-buy-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#autocomplete {
+    width: 100%;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: none;
+}
+
+#autocomplete:focus-within {
+    outline: none;
+    color: none;
+}
+
+#popUpParent {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    background-color: rgba(100, 100, 100, 0.8);
+    text-align: center;
+}
+
+#popUpChild {
+    background-color: rgba(255, 255, 255, 1);
+    width: 60%;
+    height: fit-content;
+    opacity: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    line-height: 26px;
+
+    /* center div 💀 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.close {
+    user-select: none;
+    display: inline-block;
+    padding: 10px 0 10px 0;
+    margin: 2vw 1vh;
+    text-align: center;
+    font-size: 2vw;
+    border-radius: 10px;
+    background-color: var(--focus-color);
+    width: 60%;
+
+    /* Button hover setup*/
+    transition-duration: 0.1s;
+    outline: 0px solid var(--focus-color);
+}
+
+.close:hover {
+    outline: 3px solid var(--focus-color);
+}

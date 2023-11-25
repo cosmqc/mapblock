@@ -8,11 +8,13 @@ const areas = $("area");
 let blockMap = {};
 let timer = null;
 
+const prices = [100, 500, 1000];
+
 class Block {
-    constructor(id, mapCoords, price, isBought) {
+    constructor(id, gridCoords, price, isBought) {
         this.id = id;
         this.area = areas[id];
-        this.mapCoords = mapCoords;
+        this.gridCoords = gridCoords;
         this.price = price;
         this.isBought = isBought;
     }
@@ -27,7 +29,7 @@ class Block {
 async function updateMapFromDB() {
     const data = await readDB();
     Object.values(data).forEach(block => {
-        blockMap[block.id] = new Block(block.id, block.mapCoords, block.price, block.isBought);
+        blockMap[block.id] = new Block(block.id, block.gridCoords, block.price, block.isBought);
     });
 }
 
@@ -51,18 +53,23 @@ function splitCoords(coordString) {
     }
     return coordArray;
 }
+
 // draw a shaped line from arrow to (x,y)
 function drawToSquare(block) {
-    let bounding = document.getElementById('tile-id').getBoundingClientRect();
-    let b_x = bounding.x;
-    let b_y = bounding.y - 50;
+    let bounding = null;
+    $('.tile-id').each(function() {
+        if ($(this).is(':visible')) {
+            bounding = $(this).offset();
+        }
+    });
+    let b_x = bounding.left;
+    let b_y = bounding.top - 80;
 
     let coordTuple = splitCoords($(block.area).attr("coords"));
     let x1 = coordTuple[0];
     let y1 = coordTuple[1];
     let x2 = coordTuple[2];
     let y2 = coordTuple[3];
-    console.log(x1, y1, x2, y2);
     ctx.beginPath();
     ctx.strokeStyle = '#B7EF8B';
     ctx.lineWidth = 2;
@@ -77,46 +84,33 @@ function drawToSquare(block) {
     ctx.closePath();
 }
 
-function render() {
-    ctx.globalAlpha = 0.5;
-    ctx.strokeStyle = '#202020';
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    $('area').each(function() {
-        if ($(this).data("block").isBought) {
-            let coordTuple = splitCoords($(this).attr("coords"));
-            let x1 = coordTuple[0];
-            let y1 = coordTuple[1];
-            let x2 = coordTuple[2];
-            let y2 = coordTuple[3];
+function debounce(func, time_ms) {
+    clearTimeout(timer);
+    timer = setTimeout(func, time_ms);
+}
 
-            ctx.beginPath();
-            ctx.fillRect(x1, y1, (x2 - x1), (y2 - y1));
-            ctx.closePath();
-        }
-    })
-    ctx.stroke();
-    ctx.globalAlpha = 1;
+function render() {
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     if (currently_selected) {
         drawToSquare(currently_selected);
     }
 }
 
 function changeInfo(data) {
-    $('#tile-id').html(`Aotearoa Block #${data.id}`);
-    $('#price').html(`$${data.price}`);
-    $('#infoDesc').css('visibility', 'visible');
+    $('.priceBox').each(function() {
+        $(this).find('.tile-id').html(`AOTEAROA BLOCK #${data.id}`);
+        $(this).find('h2').each(function(i, ele) {
+            $(ele).html(`$${prices[i]} - Lorem Ipsum`);
+        });
+    });
+    $('.infoDesc').css("visibility", "visible");
 }
 
-function debounce() {
-    clearTimeout(timer);
-    timer = setTimeout(render, 300);
+export function selectBlock(id) {
+    currently_selected = blockMap[id];
+    debounce(render, 300);
+    changeInfo(blockMap[currently_selected.id]);
 }
-
-
-// Add load listener to show pag when all images loaded
-window.addEventListener('load', function() {
-    alert("It's loaded!")
-})
 
 // Sets an event listener for each tile that fetches data from the data
 // dictionary and calls the function to open the info menu
@@ -127,7 +121,7 @@ $('body').on('click', 'area', function(event) {
     changeInfo(blockMap[currently_selected.id]);
 });
 
-$('#checkout-button').on('click', function(event) {
+$('.checkout-button').on('click', function(event) {
     event.preventDefault()
     if (currently_selected != false) {
         $.ajax({
@@ -151,8 +145,8 @@ $('#checkout-button').on('click', function(event) {
 
 $(window).on('resize', function() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    canvas.setAttribute('width', window.getComputedStyle(canvas, null).getPropertyValue("width"));
-    canvas.setAttribute('height', window.getComputedStyle(canvas, null).getPropertyValue("height"));
+    canvas.setAttribute('width', window.innerWidth);
+    canvas.setAttribute('height', window.innerHeight);
     debounce(render, 300);
 })
 
@@ -165,4 +159,20 @@ $('map').ready(async function() {
     // trigger manual resize event to get map to right size 
     let resizeEvent = new Event('resize');
     window.dispatchEvent(resizeEvent);
+
+    // remove loading wheel, show page
+    $('.loader').hide();
+    $('#popUpParent').show();
+    $('#page').show();
+});
+
+$('#popUpParent').on('click', function (e) {
+    if (e.target !== this)
+        return;
+
+    $(this).hide();
+});
+
+$('.close').on('click', function () {
+    $('#popUpParent').hide();
 });
