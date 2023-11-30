@@ -112,6 +112,22 @@ export function selectBlock(id) {
     changeInfo(blockMap[currently_selected.id]);
 }
 
+$('#donate-button').on('click', function() {
+    console.log('donate click');
+    let id = currently_selected.id;
+    if (id) {
+        window.location.href = `http://localhost/memory.php?id=${id}`;
+    }
+});
+
+$('#memories-button').on('click', function() {
+    console.log('memory click');
+    let id = currently_selected.id;
+    if (id) {
+        window.location.href = `http://localhost/view.php?id=${id}`;
+    }
+});
+
 // Sets an event listener for each tile that fetches data from the data
 // dictionary and calls the function to open the info menu
 $('body').on('click', 'area', function(event) {
@@ -121,28 +137,6 @@ $('body').on('click', 'area', function(event) {
     changeInfo(blockMap[currently_selected.id]);
 });
 
-$('.checkout-button').on('click', function(event) {
-    event.preventDefault()
-    if (currently_selected != false) {
-        $.ajax({
-            type: "POST",
-            url: "../../checkout.php",
-            data: JSON.stringify({
-                "name": `Block #${currently_selected.id}`,
-                "price": currently_selected.price,
-            }),
-            contentType: "application/json",
-            success: function(result) {
-                window.location.href = result;
-            },
-            error: function(result) {
-                alert('An error occured, please try again');
-                console.log(`Error talking w Stripe. Received URL: ${result}`);
-            }
-        });
-    }
-})
-
 $(window).on('resize', function() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     canvas.setAttribute('width', window.innerWidth);
@@ -151,10 +145,9 @@ $(window).on('resize', function() {
 })
 
 $('map').ready(async function() {
-    imageMapResize();
+    $('map').imageMapResize();
     await updateMapFromDB();
     updatePageFromMap();
-
 
     // trigger manual resize event to get map to right size 
     let resizeEvent = new Event('resize');
@@ -166,13 +159,15 @@ $('map').ready(async function() {
     $('#page').show();
 });
 
-$('#popUpParent').on('click', function (e) {
+
+// Exiting the initial popup
+$('#popUpParent').on('click', function(e) {
     if (e.target !== this)
         return;
 
     $(this).hide();
 });
 
-$('.close').on('click', function () {
+$('.close').on('click', function() {
     $('#popUpParent').hide();
 });

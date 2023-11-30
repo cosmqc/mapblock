@@ -1,29 +1,25 @@
 <?php
 require_once '../secrets.php';
+require_once '../vendor/stripe/stripe-php/init.php';
 
 \Stripe\Stripe::setApiKey($stripeSecretKey);
 
-$YOUR_DOMAIN = 'http://localhost';
+$YOUR_DOMAIN = 'https://localhost';
 $content = json_decode(file_get_contents('php://input'), true);
-$name = $content["name"];
-$price = intval($content['price']*100);
+$id = $content['id'];
 
 $checkout_session = \Stripe\Checkout\Session::create([
-  'line_items' => [[
-        'price_data' => [
-            'currency' => 'nzd',
-            'unit_amount' => $price,
-            'product_data' => [
-              'name' => $name,
-            ],
-          ],
-        'quantity' => 1,
-      ]],
+  'line_items' => [
+    [
+      'price' => 'price_1OHaEWGWhb3geKf3YT3ozBoV',
+      'quantity' => 1,
+    ],
+  ],
   'mode' => 'payment',
-  'success_url' => $YOUR_DOMAIN . '/success.html',
-  'cancel_url' => $YOUR_DOMAIN . '/map.html',
+  'success_url' => $YOUR_DOMAIN . '/view.php?donated=true&id=' . $id ,
+  'cancel_url' => $YOUR_DOMAIN,
   'automatic_tax' => [
-    'enabled' => true,
+    'enabled' => false,
   ],
 ]);
 

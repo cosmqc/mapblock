@@ -5,7 +5,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="resources/css/map.css">
     <script type="module" src="resources/js/address_search.js"></script>
-    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
 </head>
 
 <body>
@@ -15,22 +14,9 @@
             <div class="header">
                 <h1>TURANGAWAEWAE AOTEAROA</h1>
             </div>
-            <div id="popUpContent"><br>
-                What part of Aotearoa New Zealand do you love?<br>
-
-                Donate $10 or more to The Kind Foundation and at the same time make a shout out to your favourite place in New Zealand.<br>
-
-                Post your memory or comment to share with others why this place is special to you.<br>
-
-                Every $1 donated is a vote for that block.<br>
-
-                90% of donations raised will be invested into the projects and work of The Kind Foundation.<br>
-
-                10% of donations will be returned to the most loved part of Aotearoa each year – for that community to invest in what matters to them.<br>
-
-                Let’s be kind to people, to communities and our beautiful Aotearoa New Zealand.<br>
-
-                Thank you for your support!<br>
+            <div id="popUpContent"><br> What part of Aotearoa New Zealand do you love?<br> Donate $10 or more to The Kind Foundation and at the same time make a shout out to your favourite place in New Zealand.<br> Post your memory or comment to share with others why this place
+                is special to you.<br> Every $1 donated is a vote for that block.<br> 90% of donations raised will be invested into the projects and work of The Kind Foundation.<br> 10% of donations will be returned to the most loved part of Aotearoa
+                each year - for that community to invest in what matters to them.<br> Let's be kind to people, to communities and our beautiful Aotearoa New Zealand.<br> Thank you for your support!<br>
 
                 <div class="close">
                     CLOSE
@@ -842,21 +828,20 @@
                 </div>
                 <div class="infoBox priceBox" id="priceBox-landscape">
                     <div class="header tile-id">PICK A TILE</div>
-                    <stripe-buy-button buy-button-id="buy_btn_1OFmJZGWhb3geKf3Yc6e8enf"
-                                       publishable-key="pk_live_51NI2LvGWhb3geKf3NDpOOeTk0WqYxJCXFE9t29ovjR9Cj7qMuM5NXBG9XG2ltyTscmshsZYxjyI9DQsgRjOrJQru00d18OMxVA">
-                    </stripe-buy-button>
+                    <div class="button-container">
+                        <div class="redirect-button" id="donate-button">Donate</div>
+                        <div class="redirect-button" id="memories-button">View memories</div>
+                    </div>
                 </div>
-                <div class="infoBox priceBox" id="priceBox-portrait">
+                <!-- <div class="infoBox priceBox" id="priceBox-portrait">
                     <div class="header tile-id">PICK A TILE</div>
-                    <stripe-buy-button buy-button-id="buy_btn_1OFmJZGWhb3geKf3Yc6e8enf"
-                                       publishable-key="pk_live_51NI2LvGWhb3geKf3NDpOOeTk0WqYxJCXFE9t29ovjR9Cj7qMuM5NXBG9XG2ltyTscmshsZYxjyI9DQsgRjOrJQru00d18OMxVA">
+                    <stripe-buy-button buy-button-id="buy_btn_1OHaEbGWhb3geKf3GHNLslpT" publishable-key="pk_test_51NI2LvGWhb3geKf3xWCiK02M3quWvf0rt0k32rgyWi0SGaNilV5yKvkMGsWEAqb0sRE6YVjQccOU5CSlD6YKst6400L2iQ1l2W">
                     </stripe-buy-button>
-                </div>
+                </div> -->
                 <div class="infoBox" id="egBox">
                     <div class="header">EXAMPLE BLOCK</div>
                     <div id="egDesc">
-                        <img id="exampleImg" src="resources/img/example.png"><br>
-                        <h3>Each block of this map is a 100x100mm piece of Macrocarpa grown here in Aotearoa. The complete map will climb a shear wall 3 stories tall in the new YMCA building.</h3>
+                        <img id="exampleImg" src="resources/img/example.png"><br> Each block of this map is a 100x100mm piece of Macrocarpa grown here in Aotearoa. The complete map will climb a shear wall 3 stories tall in the new YMCA building.
                     </div>
                 </div>
             </div>
@@ -866,4 +851,5 @@
     <script type="text/javascript" src="resources/js/imageMapResizer.min.js"></script>
     <script type="module" src="resources/js/map.js"></script>
 </body>
+
 </html>
