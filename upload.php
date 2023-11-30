@@ -12,10 +12,10 @@ $block = $content['block'];
 $text = $content['text'];
 
 // Setup MySQL connection
-$conn = new PDO('mysql:dbname=' . $dbname . ';host=' . $hostname . ';charset=utf8mb4', $dbuser, $dbpass);
+$conn = new PDO('mysql:dbname=' . $dbname . ';host=' . $dbhost . ';charset=utf8mb4', $dbuser, $dbpass);
 $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+echo $conn;
 if (is_null($memory)) {
     // need to create a new memory and return the memory id
     $stmt = $conn->prepare('INSERT INTO memory (block, text) VALUES (:block, :text)');
