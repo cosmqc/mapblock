@@ -4,7 +4,7 @@ require_once '../vendor/stripe/stripe-php/init.php';
 
 \Stripe\Stripe::setApiKey($stripeSecretKey);
 
-$YOUR_DOMAIN = 'https://localhost';
+$YOUR_DOMAIN = 'https://' . $hostname;
 $content = json_decode(file_get_contents('php://input'), true);
 $id = $content['id'];
 

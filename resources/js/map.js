@@ -1,7 +1,6 @@
 import { readDB } from './init_firebase.js'
 
-// const domain = 'https://www.mapblocks.co.nz'
-const domain = 'https://localhost'
+const domain = location.protocol + '//' + location.host
 let currently_selected = false
 
 const canvas = document.getElementById("lineCanvas");

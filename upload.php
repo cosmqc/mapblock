@@ -12,7 +12,7 @@ $block = $content['block'];
 $text = $content['text'];
 
 // Setup MySQL connection
-$conn = new PDO('mysql:dbname=mapblock;host=localhost;charset=utf8mb4', $dbuser, $dbpass);
+$conn = new PDO('mysql:dbname=' . $dbname . ';host=' . $hostname . ';charset=utf8mb4', $dbuser, $dbpass);
 $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
