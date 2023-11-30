@@ -11,11 +11,12 @@ function saveUrlToDatabase(memory, url) {
             url: url,
         }),
         contentType: "application/json",
-        success: function(result) {
+        success: function() {
             console.log(`URL saved: ${url}`);
         },
         error: function(result) {
-            console.error(`Error saving url to db. Received: ${result}`);
+            console.error('Error saving url to db. Received:');
+            console.error(result);
         }
     });
 }
@@ -35,7 +36,8 @@ function saveTextToDatabase(memory, block, text) {
             console.log(`Memory successfully saved at id ${memoryid}`)
         },
         error: function(result) {
-            console.error(`Error saving memory to db. Received: ${result}`);
+            console.error('Error saving memory to db. Received:');
+            console.error(result);
         }
     });
 }
