@@ -1,4 +1,7 @@
 import { readDB } from './init_firebase.js'
+
+// const domain = 'https://www.mapblocks.co.nz'
+const domain = 'https://localhost'
 let currently_selected = false
 
 const canvas = document.getElementById("lineCanvas");
@@ -116,7 +119,7 @@ $('#donate-button').on('click', function() {
     console.log('donate click');
     let id = currently_selected.id;
     if (id) {
-        window.location.href = `http://localhost/memory.php?id=${id}`;
+        window.location.href = `${domain}/memory.php?id=${id}`;
     }
 });
 
@@ -124,7 +127,7 @@ $('#memories-button').on('click', function() {
     console.log('memory click');
     let id = currently_selected.id;
     if (id) {
-        window.location.href = `http://localhost/view.php?id=${id}`;
+        window.location.href = `${domain}/view.php?id=${id}`;
     }
 });
 
